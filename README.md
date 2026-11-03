@@ -195,7 +195,7 @@ Bundle 默认配置位于 `cordis.patch.yml`：
     frameAncestors: ['self']
 ```
 
-`catalogUrl` 默认通过 jsDelivr CDN 读取公共 [dsh-mcp-connector-registry](https://github.com/duhu2000/dsh-mcp-connector-registry)，支持 ETag/TTL 缓存；主源失败时自动尝试 GitHub raw 备用源，再回退到上次缓存或随包内置目录。jsDelivr 的分支 URL 可能存在缓存延迟，因此 Registry 合并后的新卡片不保证秒级出现。需要离线/私有模式时可将 `catalogUrl` 显式设为空字符串；显式配置其他目录 URL 时不会自动切换到公共备用源。
+`catalogUrl` 默认通过 jsDelivr CDN 读取公共 [dsh-mcp-connector-registry](https://github.com/duhu2000/dsh-mcp-connector-registry)，支持 ETag/TTL 缓存；主源失败时依次尝试 jsDelivr 的其他边缘域名（`fastly.jsdelivr.net`、`gcore.jsdelivr.net`，内容与主源一致但可达性随网络而异）和 GitHub raw 备用源，再回退到上次缓存或随包内置目录。jsDelivr 的分支 URL 可能存在缓存延迟，因此 Registry 合并后的新卡片不保证秒级出现。需要离线/私有模式时可将 `catalogUrl` 显式设为空字符串；显式配置其他目录 URL 时不会自动切换到公共备用源。
 
 远程目录请求（包括备用源）支持 `HTTP_PROXY`、`HTTPS_PROXY`、`NO_PROXY` 及其小写形式；同时存在时小写变量优先，未设置 `HTTPS_PROXY` 时 HTTPS 请求使用 `HTTP_PROXY`。代理地址须为 HTTP(S) URL；需要直连的目标可加入 `NO_PROXY`（例如 `localhost,127.0.0.1`）。Node.js 20+ 无需添加 `--use-env-proxy`；此行为不会修改 Host 的全局 fetch dispatcher 或 MCP 传输配置。
 

@@ -163,7 +163,7 @@ The detailed [Chinese user guide](docs/USER-GUIDE.md) covers category browsing, 
 
 ## Connector catalog
 
-The package contains a bundled fallback catalog. By default, it refreshes the public [dsh-mcp-connector-registry](https://github.com/duhu2000/dsh-mcp-connector-registry) through jsDelivr, then tries GitHub raw if the primary source fails; cached or bundled data remains available if neither remote source can be reached. jsDelivr branch URLs can lag behind a newly merged registry commit, so new cards may not appear immediately.
+The package contains a bundled fallback catalog. By default, it refreshes the public [dsh-mcp-connector-registry](https://github.com/duhu2000/dsh-mcp-connector-registry) through jsDelivr; if the primary source fails it tries the other jsDelivr edge domains (`fastly.jsdelivr.net`, `gcore.jsdelivr.net`, same content, reachability varies by network) and then GitHub raw, and cached or bundled data remains available if no remote source can be reached. jsDelivr branch URLs can lag behind a newly merged registry commit, so new cards may not appear immediately.
 
 The public connector registration process and descriptor requirements are documented in [docs/MARKET-REGISTRATION.md](docs/MARKET-REGISTRATION.md).
 The stdio architecture, passthrough boundary, and security constraints are documented in [docs/STDIO-SUPPORT.md](docs/STDIO-SUPPORT.md).

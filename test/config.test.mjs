@@ -11,11 +11,31 @@ test('default config uses the independent public registry', () => {
     'https://cdn.jsdelivr.net/gh/duhu2000/dsh-mcp-connector-registry@main/catalog.json',
   );
   assert.deepEqual(DEFAULT_CATALOG_FALLBACK_URLS, [
+    'https://fastly.jsdelivr.net/gh/duhu2000/dsh-mcp-connector-registry@main/catalog.json',
+    'https://gcore.jsdelivr.net/gh/duhu2000/dsh-mcp-connector-registry@main/catalog.json',
     'https://raw.githubusercontent.com/duhu2000/dsh-mcp-connector-registry/main/catalog.json',
   ]);
   assert.equal(Config({}).catalogUrl, DEFAULT_CATALOG_URL);
   assert.equal(Config({}).startupTimeoutMs, DEFAULT_STARTUP_TIMEOUT_MS);
   assert.equal(Config({}).showSidebarEntry, true);
+});
+
+test('fallback sources are distinct jsDelivr edge mirrors before GitHub raw', () => {
+  const registryPath = '/gh/duhu2000/dsh-mcp-connector-registry@main/catalog.json';
+  assert.equal(new Set(DEFAULT_CATALOG_FALLBACK_URLS).size, DEFAULT_CATALOG_FALLBACK_URLS.length);
+  assert.ok(DEFAULT_CATALOG_FALLBACK_URLS.length >= 2);
+  for (const url of DEFAULT_CATALOG_FALLBACK_URLS) {
+    assert.match(url, /^https:\/\//);
+  }
+  // 至少一个备用源与主源不同的 jsDelivr 边缘域名，避免主域被重置时无镜像可用。
+  const edgeHosts = DEFAULT_CATALOG_FALLBACK_URLS.filter((url) => url.includes('.jsdelivr.net'));
+  assert.ok(edgeHosts.length >= 1, 'expected a jsDelivr edge mirror fallback');
+  assert.equal(new URL(DEFAULT_CATALOG_URL).hostname, 'cdn.jsdelivr.net');
+  for (const url of edgeHosts) {
+    assert.notEqual(new URL(url).hostname, new URL(DEFAULT_CATALOG_URL).hostname);
+    assert.ok(url.endsWith(registryPath));
+  }
+  assert.ok(DEFAULT_CATALOG_FALLBACK_URLS.at(-1).includes('raw.githubusercontent.com'));
 });
 
 test('an explicit empty catalogUrl keeps bundled-only mode available', () => {
