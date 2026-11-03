@@ -177,6 +177,7 @@ The default bundle configuration is in `cordis.patch.yml`:
   name: dsh-mcp-connector
   config:
     catalogUrl: 'https://cdn.jsdelivr.net/gh/duhu2000/dsh-mcp-connector-registry@main/catalog.json'
+    catalogFallbackUrls: []
     persistSecrets: true
     entryPrefix: mcp
     refreshSkewMs: 300000
@@ -187,7 +188,7 @@ The default bundle configuration is in `cordis.patch.yml`:
     frameAncestors: ['self']
 ```
 
-Set `catalogUrl` to an empty string for an explicitly offline/private setup. A custom non-default URL is used as-is and does not fall back to the public registry.
+Set `catalogUrl` to an empty string for an explicitly offline/private setup. A custom non-default URL is used as-is and does not fall back to the public registry; declare `catalogFallbackUrls` to add explicit fallbacks for a custom source (tried in order, entries equal to `catalogUrl` are ignored).
 
 Remote catalog requests (including the fallback source) honor `HTTP_PROXY`, `HTTPS_PROXY`, and `NO_PROXY`, as well as their lowercase forms. A lowercase variable takes precedence when both forms are present; HTTPS uses `HTTP_PROXY` when `HTTPS_PROXY` is absent. Use an HTTP(S) proxy URL and configure `NO_PROXY` for destinations that should connect directly (for example, `localhost,127.0.0.1`). This works on Node.js 20+ without `--use-env-proxy` and does not change the Host's global fetch dispatcher or MCP transport settings.
 

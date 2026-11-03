@@ -27,6 +27,17 @@ test('an explicit custom catalogUrl remains unchanged', () => {
   assert.equal(Config({ catalogUrl: customUrl }).catalogUrl, customUrl);
 });
 
+test('a custom catalogUrl can declare its own fallback sources', () => {
+  const customUrl = 'https://registry.example.com/catalog.json';
+  const mirrorUrl = 'https://mirror.example.com/catalog.json';
+  assert.deepEqual(Config({}).catalogFallbackUrls, []);
+  assert.deepEqual(Config({ catalogUrl: customUrl }).catalogFallbackUrls, []);
+  assert.deepEqual(
+    Config({ catalogUrl: customUrl, catalogFallbackUrls: [mirrorUrl] }).catalogFallbackUrls,
+    [mirrorUrl],
+  );
+});
+
 test('bundle patch uses the same jsDelivr primary catalog source', () => {
   const patch = readFileSync(new URL('../cordis.patch.yml', import.meta.url), 'utf8');
   assert.match(patch, new RegExp(DEFAULT_CATALOG_URL.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
